@@ -1,0 +1,62 @@
+services:
+  backend:
+    container_name: backend
+    build: ./backend
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend/Logit_BE:/app
+    networks:
+      - logit_net
+    env_file:
+      - ./.env
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+  
+  db:
+    container_name: db
+    image: mysql
+    expose:
+      - 5432
+    volumes:
+      - volume-db:/var/lib/mysql
+    networks:
+      - logit_net
+    env_file:
+      - ./.env
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-u", "root", "--password=${MYSQL_ROOT_PASSWORD}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  
+  nginx:
+    container_name: nginx
+    build:
+      context: ./frontend
+      args:
+        - SSL_PUBLIC_KEY=${SSL_PUBLIC_KEY}
+        - SSL_PRIVATE_KEY=${SSL_PRIVATE_KEY}
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./frontend/Logit_FE:/usr/share/nginx/html:ro
+    networks:
+      - logit_net
+    restart: always
+    depends_on:
+      - backend
+
+networks:
+  logit_net:
+    name: logit_net
+    driver: bridge
+
+volumes:
+  volume-db:
+    name: volume-db
+    driver: local

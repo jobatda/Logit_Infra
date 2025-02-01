@@ -4,13 +4,13 @@ FROM python:3.11-slim
 WORKDIR /code
 
 # 
-COPY ./app/requirements.txt /code/requirements.txt
+COPY ./Logit_LANGCHAIN/requirements.txt /code/requirements.txt
 
 # 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 # 
-COPY ./app /code/app
+COPY ./Logit_LANGCHAIN /code/app
 
 # 포트 노출
 EXPOSE 8080

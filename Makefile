@@ -54,6 +54,10 @@ rm-all: rm-fe rm-be
 up: clone-all
 	-@docker-compose up --build -d
 
+# ✅ 개발 모드 실행
+up-dev: clone-all
+	-@docker-compose -f docker-compose_front_dev.yml up --build -d
+
 down:
 	-@docker-compose down 
 

@@ -1,9 +1,11 @@
+version: '3.8'
+
 services:
   backend:
     container_name: backend
     build: ./backend
     ports:
-      - 8000:8000
+      - "8000:8000"
     volumes:
       - ./backend/Logit_BE:/app
     networks:
@@ -14,12 +16,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
-  
+
   db:
     container_name: db
     image: mysql
     expose:
-      - 5432
+      - "5432"
     volumes:
       - volume-db:/var/lib/mysql
     networks:
@@ -32,24 +34,27 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-  
-  nginx:
-    container_name: nginx
-    build:
-      context: ./frontend
-      args:
-        - SSL_PUBLIC_KEY=${SSL_PUBLIC_KEY}
-        - SSL_PRIVATE_KEY=${SSL_PRIVATE_KEY}
+
+  react:
+    container_name: react-dev
+    build: 
+      context: ./frontend/Logit_FE
+      dockerfile: Dockerfile
     ports:
-      - 80:80
-      - 443:443
+      - "3000:3000"
     volumes:
-      - ./frontend/Logit_FE/dist:/usr/share/nginx/html:ro
+      - ./frontend/Logit_FE:/app  # 컨테이너 내 /app에 마운트
+      - /app/node_modules
     networks:
       - logit_net
+    environment:
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
     restart: always
     depends_on:
       - backend
+      - db
+    command: ["yarn", "dev"]
 
 networks:
   logit_net:

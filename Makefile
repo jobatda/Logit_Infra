@@ -3,12 +3,15 @@ NC=\033[0m
 
 FE_URL = https://github.com/jobatda/Logit_FE.git
 BE_URL = https://github.com/jobatda/Logit_BE.git
+LLM_URL = https://github.com/jobatda/Logit_langchain.git
 
 FE_NAME = Logit_FE
 BE_NAME = Logit_BE
+LLM_NAME = Logit_LANGCHAIN
 
 FE_PATH = ./frontend
 BE_PATH = ./backend
+LLM_PATH = ./llmserver
 
 clone-fe:
 	@if [ ! -d "$(FE_PATH)/$(FE_NAME)" ]; then \
@@ -25,7 +28,15 @@ clone-be:
 	else \
 		echo "Backend repository already exists in $(BE_PATH)/$(BE_NAME)"; \
 	fi
-# Front / Back 레포 생성 명령어
+
+clone-llm:
+	@if [ ! -d "$(LLM_PATH)/$(LLM_NAME)" ]; then \
+		echo "Cloning LLMserver repository..."; \
+		git clone $(LLM_URL) $(LLM_PATH)/$(LLM_NAME); \
+	else \
+		echo "LLMserver repository already exists in $(LLM_PATH)/$(LLM_NAME)"; \
+	fi
+# Front / Back / LlmServer 레포 생성 명령어
 
 rm-fe:
 	@if [ ! -d "$(FE_PATH)/$(FE_NAME)" ]; then \
@@ -42,13 +53,21 @@ rm-be:
 		rm -rf $(BE_PATH)/$(BE_NAME); \
 		echo "Clean Complete."; \
 	fi
-# Front / Back 레포 삭제 명령어
+
+rm-llm:
+	@if [ ! -d "$(LLM_PATH)/$(LLM_NAME)" ]; then \
+		echo "Already cleaned LLMserver repository..."; \
+	else \
+		rm -rf $(LLM_PATH)/$(LLM_NAME); \
+		echo "Clean Complete."; \
+	fi
+# Front / Back / LlmServer 레포 삭제 명령어
 
 
-clone-all: clone-fe clone-be
+clone-all: clone-fe clone-be clone-llm
 # 레포 일괄생성
 
-rm-all: rm-fe rm-be
+rm-all: rm-fe rm-be rm-llm
 # 레포 일괄삭제
 
 up: clone-all

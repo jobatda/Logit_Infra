@@ -7,7 +7,7 @@ services:
     ports:
       - 8080:8080  # llmserver의 8080 포트를 외부로 노출
     volumes:
-      - ./llmserver/app:/app  # LLM 서버 코드와 연결
+      - ./llmserver/Logit_LANGCHAIN:/app  # LLM 서버 코드와 연결
     networks:
       - logit_net  # 같은 네트워크에 연결
     env_file:
@@ -51,8 +51,8 @@ services:
   react:
     container_name: react-dev
     build: 
-      context: ./frontend/Logit_FE
-      dockerfile: Dockerfile
+      context: ./frontend/
+      dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     volumes:

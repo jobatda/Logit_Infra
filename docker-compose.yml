@@ -1,4 +1,17 @@
 services:
+  llmserver:
+    container_name: llmserver
+    build: ./llmserver  # llmserver 디렉토리에서 Dockerfile을 빌드
+    ports:
+      - 8080:8080  # llmserver의 8080 포트를 외부로 노출
+    volumes:
+      - ./llmserver/app:/app  # LLM 서버 코드와 연결
+    networks:
+      - logit_net  # 같은 네트워크에 연결
+    env_file:
+      - ./.env  # 환경 변수 파일
+    restart: always
+
   backend:
     container_name: backend
     build: ./backend
@@ -14,7 +27,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-  
   db:
     container_name: db
     image: mysql

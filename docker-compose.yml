@@ -30,8 +30,8 @@ services:
   db:
     container_name: db
     image: mysql
-    expose:
-      - 3306
+    ports:
+      - 3306:3306
     volumes:
       - volume-db:/var/lib/mysql
     networks:
